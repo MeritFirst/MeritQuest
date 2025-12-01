@@ -1,7 +1,17 @@
+/**
+ * TODO: Build your dashboard here
+ *
+ * The entire responses directory is yours to build out as you see fit.
+ * - Create components, subdirectories, whatever structure you think makes sense
+ * - Server components, client components, server actions are all fair game.
+ * - The code below is just a starting point. Feel free to delete it and start from scratch.
+ *
+ *
+ */
+
 import Link from "next/link";
 import { Nav } from "@/app/components/nav";
 import { CopyButton } from "@/components/copy-button";
-import { ResponsesDashboard } from "./responses-dashboard";
 
 const API_URL = "https://mockapi.meritfirst.us";
 
@@ -23,23 +33,19 @@ export default function ResponsesPage() {
             </div>
           </div>
 
-          {/* TODO: Remove this help section once you start building */}
-          <div className="bg-card rounded-lg shadow-sm p-6 border border-border mb-6">
+          {/* TODO: Replace this with your dashboard */}
+          <div className="bg-card rounded-lg shadow-sm p-6 border border-border">
             <h2 className="font-semibold text-foreground mb-3">Getting Started</h2>
             <div className="space-y-4 text-sm">
-              <div>
-                <p className="text-muted-foreground mb-2">
-                  <strong className="text-foreground">Task 1:</strong> General browsing — browse, search, filter, update statuses, archive/unarchive
-                </p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">
-                  <strong className="text-foreground">Task 2:</strong> Role-aware ranking — surface candidates relevant to the{" "}
-                  <Link href="/docs/brief" className="text-primary hover:underline">
-                    Senior Frontend Engineer role
-                  </Link>
-                </p>
-              </div>
+              <p className="text-muted-foreground">
+                <strong className="text-foreground">Task 1:</strong> General browsing — browse, search, filter, update statuses, archive/unarchive
+              </p>
+              <p className="text-muted-foreground">
+                <strong className="text-foreground">Task 2:</strong> Role-aware ranking — surface candidates relevant to the{" "}
+                <Link href="/docs/brief" className="text-primary hover:underline">
+                  Senior Frontend Engineer role
+                </Link>
+              </p>
             </div>
             <div className="mt-4 pt-4 border-t border-border flex gap-4 text-sm">
               <Link href="/docs/api" className="text-primary hover:underline">
@@ -53,9 +59,6 @@ export default function ResponsesPage() {
               </span>
             </div>
           </div>
-
-          {/* Build your dashboard in responses-dashboard.tsx */}
-          <ResponsesDashboard />
         </div>
       </div>
     </>
