@@ -1,8 +1,5 @@
-import Link from "next/link";
 import { Nav } from "@/app/components/nav";
-import { CopyButton } from "@/components/copy-button";
-
-const API_URL = "https://mockapi.meritfirst.us";
+import Link from "next/link";
 
 export default function BriefPage() {
   return (
@@ -18,7 +15,9 @@ export default function BriefPage() {
             <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 mb-6">
               <p className="text-sm text-amber-700 dark:text-amber-400">
                 <strong>Note:</strong> This is a summary. See{" "}
-                <code className="bg-amber-500/20 px-1 rounded">docs/brief.md</code>{" "}
+                <code className="bg-amber-500/20 px-1 rounded">
+                  docs/brief.md
+                </code>{" "}
                 for the full requirements, job description, and data schema.
               </p>
             </div>
@@ -43,9 +42,9 @@ export default function BriefPage() {
                 <p className="text-muted-foreground">
                   Build a candidate review dashboard that helps hiring managers
                   efficiently identify and manage top talent from ~50,000 test
-                  responses. You&apos;ll need to create both a general-purpose browsing
-                  experience and role-specific features that surface the best
-                  candidates for a Senior Frontend Engineer position.
+                  responses. You&apos;ll need to create both a general-purpose
+                  browsing experience and role-specific features that surface
+                  the best candidates for a Senior Frontend Engineer position.
                 </p>
               </section>
 
@@ -60,11 +59,16 @@ export default function BriefPage() {
                 <div className="space-y-4">
                   <div className="bg-muted/50 rounded-lg p-5 border border-border">
                     <div className="flex gap-3">
-                      <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary text-primary-foreground text-sm font-semibold flex items-center justify-center">1</span>
+                      <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary text-primary-foreground text-sm font-semibold flex items-center justify-center">
+                        1
+                      </span>
                       <div>
-                        <h3 className="font-semibold text-foreground mb-1">General Response Browsing</h3>
+                        <h3 className="font-semibold text-foreground mb-1">
+                          General Response Browsing
+                        </h3>
                         <p className="text-muted-foreground text-sm mb-3">
-                          A baseline dashboard for browsing all candidate responses.
+                          A baseline dashboard for browsing all candidate
+                          responses.
                         </p>
                         <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                           <li>View and navigate through all responses</li>
@@ -78,15 +82,21 @@ export default function BriefPage() {
 
                   <div className="bg-muted/50 rounded-lg p-5 border border-border">
                     <div className="flex gap-3">
-                      <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary text-primary-foreground text-sm font-semibold flex items-center justify-center">2</span>
+                      <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary text-primary-foreground text-sm font-semibold flex items-center justify-center">
+                        2
+                      </span>
                       <div>
-                        <h3 className="font-semibold text-foreground mb-1">Role-Aware Candidate Ranking</h3>
+                        <h3 className="font-semibold text-foreground mb-1">
+                          Role-Aware Candidate Ranking
+                        </h3>
                         <p className="text-muted-foreground text-sm mb-3">
-                          When a role context is selected, surface candidates most relevant to that position.
+                          When a role context is selected, surface candidates
+                          most relevant to that position.
                         </p>
                         <p className="text-sm text-muted-foreground italic">
-                          How you implement this is up to you. Think about what signals in the data
-                          indicate a good fit for the role described below.
+                          How you implement this is up to you. Think about what
+                          signals in the data indicate a good fit for the role
+                          described below.
                         </p>
                       </div>
                     </div>
@@ -107,34 +117,50 @@ export default function BriefPage() {
                     Engineer to build consumer-facing financial products.
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Your dashboard should help identify candidates who would be a
-                    good fit for this role. See <code>docs/brief.md</code> for the
-                    full job description.
+                    Your dashboard should help identify candidates who would be
+                    a good fit for this role. See <code>docs/brief.md</code> for
+                    the full job description.
                   </p>
                 </div>
               </section>
 
               <section className="mb-8">
                 <h2 className="text-2xl font-semibold text-foreground mb-4">
-                  API
+                  Data Access
                 </h2>
-                <div className="p-4 bg-muted rounded-lg mb-4">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm text-foreground">
-                      <span className="font-medium">Base URL:</span>{" "}
-                      <code className="bg-background px-2 py-0.5 rounded text-foreground">
-                        {API_URL}
-                      </code>
+                <p className="text-muted-foreground mb-4">
+                  Choose how you want to access and mutate data:
+                </p>
+                <div className="grid gap-4 md:grid-cols-2 mb-4">
+                  <div className="bg-muted/50 rounded-lg p-4 border border-border">
+                    <h4 className="font-medium text-foreground mb-2">
+                      REST API
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Use <code>fetch()</code> with{" "}
+                      <code>/api/take-home/...</code> endpoints
                     </p>
-                    <CopyButton text={API_URL} />
+                  </div>
+                  <div className="bg-muted/50 rounded-lg p-4 border border-border">
+                    <h4 className="font-medium text-foreground mb-2">
+                      Server Actions
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Import from <code>lib/actions.ts</code> for React-native
+                      mutations
+                    </p>
                   </div>
                 </div>
-                <p className="text-muted-foreground">
-                  See the{" "}
-                  <Link href="/docs/api" className="text-primary hover:underline">
+                <p className="text-sm text-muted-foreground">
+                  Data is stored in-memory and resets on dev server restart. See
+                  the{" "}
+                  <Link
+                    href="/docs/api"
+                    className="text-primary hover:underline"
+                  >
                     API Reference
                   </Link>{" "}
-                  for endpoints and examples.
+                  for full documentation.
                 </p>
               </section>
 
@@ -144,24 +170,29 @@ export default function BriefPage() {
                 </h2>
                 <ul className="space-y-2 text-muted-foreground">
                   <li>
-                    <strong className="text-foreground">Product Thinking:</strong> Does the dashboard
-                    actually help find good candidates?
+                    <strong className="text-foreground">
+                      Product Thinking:
+                    </strong>{" "}
+                    Does the dashboard actually help find good candidates?
                   </li>
                   <li>
-                    <strong className="text-foreground">Technical Quality:</strong> Clean, well-typed,
-                    well-architected code
+                    <strong className="text-foreground">
+                      Technical Quality:
+                    </strong>{" "}
+                    Clean, well-typed, well-architected code
                   </li>
                   <li>
-                    <strong className="text-foreground">Performance:</strong> Fast initial load,
-                    responsive interactions, efficient data fetching
+                    <strong className="text-foreground">Performance:</strong>{" "}
+                    Fast initial load, responsive interactions, efficient data
+                    fetching
                   </li>
                   <li>
-                    <strong className="text-foreground">Polish:</strong> Loading states, responsive
-                    design, attention to detail
+                    <strong className="text-foreground">Polish:</strong> Loading
+                    states, responsive design, attention to detail
                   </li>
                   <li>
-                    <strong className="text-foreground">Creativity:</strong> Interesting features beyond
-                    the basics
+                    <strong className="text-foreground">Creativity:</strong>{" "}
+                    Interesting features beyond the basics
                   </li>
                 </ul>
               </section>
@@ -177,25 +208,35 @@ export default function BriefPage() {
                   app/responses/
                 </code>
                 <p className="text-sm text-muted-foreground mt-3">
-                  Types are available in <code>lib/types.ts</code>. Create additional files as needed.
+                  Types in <code>lib/types.ts</code>, Server Actions in{" "}
+                  <code>lib/actions.ts</code>. Create additional files as
+                  needed.
                 </p>
               </section>
 
               <div className="bg-muted rounded-lg p-6 mt-8">
-                <h3 className="font-semibold text-foreground mb-2">Next Steps</h3>
+                <h3 className="font-semibold text-foreground mb-2">
+                  Next Steps
+                </h3>
                 <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
                   <li>
                     Read the full brief at <code>docs/brief.md</code>
                   </li>
                   <li>
                     Review the{" "}
-                    <Link href="/docs/api" className="text-primary hover:underline">
+                    <Link
+                      href="/docs/api"
+                      className="text-primary hover:underline"
+                    >
                       API Reference
                     </Link>
                   </li>
                   <li>
                     Build your{" "}
-                    <Link href="/responses" className="text-primary hover:underline">
+                    <Link
+                      href="/responses"
+                      className="text-primary hover:underline"
+                    >
                       dashboard
                     </Link>
                   </li>

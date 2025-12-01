@@ -1,7 +1,4 @@
 import { Nav } from "@/app/components/nav";
-import { CopyButton } from "@/components/copy-button";
-
-const API_URL = "https://mockapi.meritfirst.us";
 
 export default function ApiReferencePage() {
   return (
@@ -16,21 +13,48 @@ export default function ApiReferencePage() {
 
             <div className="prose prose-neutral dark:prose-invert max-w-none">
               <p className="text-muted-foreground mb-6">
-                All data comes from an external API. See{" "}
+                The API runs locally as part of the Next.js dev server. See{" "}
                 <code>docs/api-reference.md</code> for full documentation.
               </p>
 
               <div className="mb-8 p-4 bg-muted rounded-lg">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm text-foreground">
-                    <span className="font-medium">Base URL:</span>{" "}
-                    <code className="bg-background px-2 py-0.5 rounded text-foreground">
-                      {API_URL}
-                    </code>
-                  </p>
-                  <CopyButton text={API_URL} />
-                </div>
+                <p className="text-sm text-foreground">
+                  <span className="font-medium">Base URL:</span>{" "}
+                  <code className="bg-background px-2 py-0.5 rounded text-foreground">
+                    /api/take-home
+                  </code>
+                </p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Data is stored in-memory and resets when you restart the dev
+                  server.
+                </p>
               </div>
+
+              <section className="mb-8">
+                <h2 className="text-2xl font-semibold text-foreground mb-4">
+                  Two Ways to Access Data
+                </h2>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="border border-border rounded-lg p-4">
+                    <h3 className="font-medium text-foreground mb-2">
+                      REST API
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Use <code>fetch()</code> with the endpoints below. Good
+                      for caching and traditional patterns.
+                    </p>
+                  </div>
+                  <div className="border border-border rounded-lg p-4">
+                    <h3 className="font-medium text-foreground mb-2">
+                      Server Actions
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Import from <code>lib/actions.ts</code>. Good for forms
+                      and React integration.
+                    </p>
+                  </div>
+                </div>
+              </section>
 
               <section className="mb-8">
                 <h2 className="text-2xl font-semibold text-foreground mb-4">
@@ -43,7 +67,9 @@ export default function ApiReferencePage() {
                       <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 text-xs font-medium px-2 py-1 rounded">
                         GET
                       </span>
-                      <code className="text-sm text-foreground font-medium">/take-home/responses</code>
+                      <code className="text-sm text-foreground font-medium">
+                        /api/take-home/responses
+                      </code>
                     </div>
                     <p className="text-sm text-muted-foreground">
                       List responses with filtering and pagination
@@ -55,7 +81,9 @@ export default function ApiReferencePage() {
                       <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 text-xs font-medium px-2 py-1 rounded">
                         GET
                       </span>
-                      <code className="text-sm text-foreground font-medium">/take-home/responses/:id</code>
+                      <code className="text-sm text-foreground font-medium">
+                        /api/take-home/responses/:id
+                      </code>
                     </div>
                     <p className="text-sm text-muted-foreground">
                       Get a single response by ID
@@ -67,7 +95,9 @@ export default function ApiReferencePage() {
                       <span className="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400 text-xs font-medium px-2 py-1 rounded">
                         PATCH
                       </span>
-                      <code className="text-sm text-foreground font-medium">/take-home/responses/:id</code>
+                      <code className="text-sm text-foreground font-medium">
+                        /api/take-home/responses/:id
+                      </code>
                     </div>
                     <p className="text-sm text-muted-foreground">
                       Update a response (review status, archive)
@@ -76,15 +106,15 @@ export default function ApiReferencePage() {
 
                   <div className="border border-border rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 text-xs font-medium px-2 py-1 rounded">
-                        POST
+                      <span className="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400 text-xs font-medium px-2 py-1 rounded">
+                        PATCH
                       </span>
                       <code className="text-sm text-foreground font-medium">
-                        /take-home/responses/bulk-update
+                        /api/take-home/responses
                       </code>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      Bulk update multiple responses
+                      Bulk update multiple responses (with ids array in body)
                     </p>
                   </div>
 
@@ -93,7 +123,9 @@ export default function ApiReferencePage() {
                       <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 text-xs font-medium px-2 py-1 rounded">
                         GET
                       </span>
-                      <code className="text-sm text-foreground font-medium">/take-home/review-statuses</code>
+                      <code className="text-sm text-foreground font-medium">
+                        /api/take-home/review-statuses
+                      </code>
                     </div>
                     <p className="text-sm text-muted-foreground">
                       List available review statuses
@@ -105,7 +137,9 @@ export default function ApiReferencePage() {
                       <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 text-xs font-medium px-2 py-1 rounded">
                         GET
                       </span>
-                      <code className="text-sm text-foreground font-medium">/take-home/test-names</code>
+                      <code className="text-sm text-foreground font-medium">
+                        /api/take-home/test-names
+                      </code>
                     </div>
                     <p className="text-sm text-muted-foreground">
                       List unique test names
@@ -117,7 +151,9 @@ export default function ApiReferencePage() {
                       <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 text-xs font-medium px-2 py-1 rounded">
                         GET
                       </span>
-                      <code className="text-sm text-foreground font-medium">/take-home/stats</code>
+                      <code className="text-sm text-foreground font-medium">
+                        /api/take-home/stats
+                      </code>
                     </div>
                     <p className="text-sm text-muted-foreground">
                       Get dataset statistics (totals, counts by state)
@@ -131,7 +167,7 @@ export default function ApiReferencePage() {
                   Query Parameters
                 </h2>
                 <p className="text-muted-foreground mb-4">
-                  The <code>/take-home/responses</code> endpoint supports:
+                  The <code>/api/take-home/responses</code> endpoint supports:
                 </p>
                 <div className="overflow-x-auto">
                   <table className="min-w-full text-sm">
@@ -217,7 +253,8 @@ export default function ApiReferencePage() {
                         </td>
                         <td className="py-2 pr-4">-</td>
                         <td className="py-2">
-                          Comma-separated status names (use &quot;None&quot; for null)
+                          Comma-separated status names (use &quot;None&quot; for
+                          null)
                         </td>
                       </tr>
                     </tbody>
@@ -228,8 +265,8 @@ export default function ApiReferencePage() {
               <div className="bg-muted rounded-lg p-6">
                 <p className="text-sm text-muted-foreground">
                   See <code>docs/api-reference.md</code> for complete
-                  documentation including request/response examples and
-                  TypeScript types. Types are also available in{" "}
+                  documentation including request/response examples, Server
+                  Actions, and TypeScript types. Types are also available in{" "}
                   <code>lib/types.ts</code>.
                 </p>
               </div>

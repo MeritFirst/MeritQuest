@@ -80,4 +80,5 @@ export type DatasetStats = {
   };
 };
 
-export const API_BASE_URL = "https://mockapi.meritfirst.us";
+// API base URL - use relative path for local API routes
+export const API_BASE_URL = "/api";
