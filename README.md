@@ -29,14 +29,16 @@ See `docs/brief.md` for full requirements. In short:
 
 ```
 app/
-├── responses/          # TODO: your implementation goes here
-├── docs/               # In-app documentation pages
-└── page.tsx            # Home page
+├── responses/              # TODO: your implementation goes here
+├── docs/                   # In-app documentation pages
+│   ├── brief/
+│   └── api/
+└── page.tsx                # Home page
 docs/
-├── brief.md            # Product requirements
-└── api-reference.md    # API documentation
+├── brief.md                # Product requirements
+└── api-reference.md        # API documentation
 lib/
-└── types.ts            # TypeScript types for API responses
+└── types.ts                # TypeScript types for API responses
 ```
 
 ## Tech Stack
