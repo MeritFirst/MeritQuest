@@ -1,260 +1,398 @@
-# API Reference
+# MeritFirst Take-Home API Reference
 
-This document describes the database interface (`lib/db.ts`) and data structures (`lib/data.ts`) available for this assessment.
+Base URL: `https://mockapi.meritfirst.us`
 
-## Data Types
+All endpoints return JSON. CORS is enabled for all origins.
 
-### `CandidateResponse`
-Represents a candidate's test submission with associated metadata.
+---
+
+## Dataset Overview
+
+The API serves **50,000 mock candidate responses** with:
+
+- **~46,000 active** / **~4,000 archived** candidates
+- **~40,000 completed** / **~5,000 in_progress** / **~5,000 pending** states
+- **10 different assessment types**
+- **6 review status stages**
+- Seeded random data (consistent across requests)
+
+---
+
+## Responses
+
+### `GET /take-home/responses`
+
+List candidate responses with filtering, sorting, and pagination.
+
+**Query Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `page` | number | `1` | Page number (1-indexed) |
+| `pageSize` | number | `25` | Results per page (1-100) |
+| `sort` | string | `"startedAt"` | Sort field: `startedAt`, `aiScore`, `testName`, `name` |
+| `direction` | string | `"desc"` | Sort direction: `asc`, `desc` |
+| `search` | string | — | Search by name, email, or test name (min 2 chars) |
+| `archived` | string | `"active"` | Filter: `active`, `archived`, `all` |
+| `testNames` | string | — | Comma-separated test names to filter |
+| `states` | string | — | Comma-separated states: `pending`, `in_progress`, `completed` |
+| `reviewStatusNames` | string | — | Comma-separated status names (use `None` for null) |
+
+**Response:**
+
+```json
+{
+  "rows": [CandidateResponse],
+  "total": 46022,
+  "hasNextPage": true
+}
+```
+
+**Examples:**
+
+```bash
+# Get first page of active candidates
+GET /take-home/responses
+
+# Search for candidates named "smith"
+GET /take-home/responses?search=smith
+
+# Get completed candidates sorted by AI score (highest first)
+GET /take-home/responses?states=completed&sort=aiScore&direction=desc
+
+# Filter by multiple test names
+GET /take-home/responses?testNames=Senior%20Frontend%20Engineer%20Assessment,Backend%20Developer%20Technical
+
+# Get archived candidates with "New" review status
+GET /take-home/responses?archived=archived&reviewStatusNames=New
+
+# Get candidates with no review status assigned
+GET /take-home/responses?reviewStatusNames=None
+
+# Pagination with custom page size
+GET /take-home/responses?page=5&pageSize=50
+```
+
+---
+
+### `GET /take-home/responses/:id`
+
+Get a single candidate response by ID.
+
+**Path Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | string | Response ID (e.g., `response-123`) |
+
+**Response:** `CandidateResponse` object
+
+**Error Response (404):**
+
+```json
+{
+  "error": "Response not found"
+}
+```
+
+**Example:**
+
+```bash
+GET /take-home/responses/response-42
+```
+
+---
+
+### `PATCH /take-home/responses/:id`
+
+Update a single candidate response.
+
+**Path Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | string | Response ID (e.g., `response-123`) |
+
+**Request Body:**
+
+```json
+{
+  "reviewStatusId": "rs-3",
+  "archivedAt": "2024-01-15T10:30:00.000Z"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `reviewStatusId` | string \| null | Review status ID (`rs-1` through `rs-6`) or `null` to clear |
+| `archivedAt` | string \| null | ISO 8601 timestamp or `null` to unarchive |
+
+**Response:** Updated `CandidateResponse` object
+
+**Error Responses:**
+
+- `404`: Response not found
+- `400`: Invalid review status ID
+
+**Examples:**
+
+```bash
+# Set review status to "Technical Interview"
+PATCH /take-home/responses/response-42
+Content-Type: application/json
+
+{
+  "reviewStatusId": "rs-3"
+}
+
+# Archive a candidate
+PATCH /take-home/responses/response-42
+Content-Type: application/json
+
+{
+  "archivedAt": "2024-01-15T10:30:00.000Z"
+}
+
+# Clear review status
+PATCH /take-home/responses/response-42
+Content-Type: application/json
+
+{
+  "reviewStatusId": null
+}
+```
+
+---
+
+### `POST /take-home/responses/bulk-update`
+
+Update multiple candidate responses at once.
+
+**Request Body:**
+
+```json
+{
+  "ids": ["response-1", "response-2", "response-3"],
+  "updates": {
+    "reviewStatusId": "rs-2"
+  },
+  "useTransaction": false
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `ids` | string[] | Yes | Array of response IDs to update |
+| `updates` | object | Yes | Fields to update (same as PATCH) |
+| `updates.reviewStatusId` | string \| null | No | Review status ID or null |
+| `updates.archivedAt` | string \| null | No | Archive timestamp or null |
+| `useTransaction` | boolean | No | Wrap in transaction for atomicity (default: `false`) |
+
+**Response:**
+
+```json
+{
+  "updatedCount": 3
+}
+```
+
+**Error Responses:**
+
+- `400`: Invalid IDs array, response not found, or invalid review status
+
+**Examples:**
+
+```bash
+# Bulk archive candidates
+POST /take-home/responses/bulk-update
+Content-Type: application/json
+
+{
+  "ids": ["response-1", "response-2", "response-3"],
+  "updates": {
+    "archivedAt": "2024-01-15T10:30:00.000Z"
+  }
+}
+
+# Bulk update with transaction (atomic - all or nothing)
+POST /take-home/responses/bulk-update
+Content-Type: application/json
+
+{
+  "ids": ["response-10", "response-20", "response-30"],
+  "updates": {
+    "reviewStatusId": "rs-5"
+  },
+  "useTransaction": true
+}
+```
+
+---
+
+## Review Statuses
+
+### `GET /take-home/review-statuses`
+
+List all available review statuses.
+
+**Response:**
+
+```json
+[
+  { "id": "rs-1", "name": "New", "position": 1, "type": "screening" },
+  { "id": "rs-2", "name": "Phone Screen", "position": 2, "type": "screening" },
+  { "id": "rs-3", "name": "Technical Interview", "position": 3, "type": "interviewing" },
+  { "id": "rs-4", "name": "Final Round", "position": 4, "type": "interviewing" },
+  { "id": "rs-5", "name": "Offer Extended", "position": 5, "type": "offer" },
+  { "id": "rs-6", "name": "Not a Fit", "position": 6, "type": "rejection" }
+]
+```
+
+---
+
+### `GET /take-home/review-statuses/:id`
+
+Get a single review status by ID.
+
+**Path Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | string | Review status ID (e.g., `rs-1`) |
+
+**Response:** `ReviewStatus` object
+
+---
+
+## Test Names
+
+### `GET /take-home/test-names`
+
+List all unique test/assessment names for filtering.
+
+**Response:**
+
+```json
+[
+  "Backend Developer Technical",
+  "Data Engineering Assessment",
+  "DevOps Engineer Evaluation",
+  "Full Stack Take-Home",
+  "Machine Learning Engineer Test",
+  "Mobile Developer Technical",
+  "Node.js Backend Challenge",
+  "React Specialist Assessment",
+  "Senior Frontend Engineer Assessment",
+  "System Design Interview"
+]
+```
+
+---
+
+## Statistics
+
+### `GET /take-home/stats`
+
+Get summary statistics about the dataset.
+
+**Response:**
+
+```json
+{
+  "total": 50000,
+  "active": 46022,
+  "archived": 3978,
+  "byState": {
+    "completed": 40063,
+    "in_progress": 4994,
+    "pending": 4943
+  }
+}
+```
+
+---
+
+## Type Definitions
+
+### CandidateResponse
 
 ```typescript
 type CandidateResponse = {
-  id: string;
+  id: string;                    // "response-123"
   candidateTest: {
-    id: string;
-    state: "pending" | "in_progress" | "completed";
-    archivedAt: string | null;
-    startedAt: string | null;
-    completedAt: string | null;
+    id: string;                  // "ct-123"
+    state: CandidateTestState;   // "pending" | "in_progress" | "completed"
+    archivedAt: string | null;   // ISO 8601 timestamp or null
+    startedAt: string | null;    // ISO 8601 timestamp or null
+    completedAt: string | null;  // ISO 8601 timestamp or null
     timeTakenSeconds: number | null;
   };
   user: {
-    id: string;
+    id: string;                  // "user-123"
     preferredName: string | null;
-    name: string;
-    email: string;
-    city: string | null;
-    state: string | null;
-    country: string | null;
+    name: string;                // "Emma Smith"
+    email: string;               // "emma.smith@example.com"
+    city: string | null;         // "San Francisco"
+    state: string | null;        // "CA"
+    country: string | null;      // "United States"
   };
   test: {
-    id: string;
-    name: string;
+    id: string;                  // "test-1"
+    name: string;                // "Senior Frontend Engineer Assessment"
   };
   reviewStatus: {
-    id: string;
-    name: string;
-    position: number;
+    id: string;                  // "rs-1"
+    name: string;                // "New"
+    position: number;            // 1
   } | null;
-  aiScore: number | null; // 0-100
-  notesPreview: string | null;
-  notesCount: number;
+  aiScore: number | null;        // 0-100 or null
+  notesPreview: string | null;   // Preview text or null
+  notesCount: number;            // Number of notes
 };
 ```
 
-### `ReviewStatus`
-Represents a review status that can be assigned to responses.
+### ReviewStatus
 
 ```typescript
 type ReviewStatus = {
-  id: string;
-  name: string;
-  position: number;
+  id: string;       // "rs-1"
+  name: string;     // "New"
+  position: number; // 1 (for ordering)
   type: "screening" | "interviewing" | "offer" | "rejection";
 };
 ```
 
-### `ListResponsesParams`
-Parameters for querying and filtering responses.
+### CandidateTestState
 
 ```typescript
-type ListResponsesParams = {
-  page?: number; // 1-based, default 1
-  pageSize?: number; // default 10
-  sort?: "startedAt" | "aiScore" | "testName" | "name"; // default "startedAt"
-  direction?: "asc" | "desc"; // default "desc"
-  search?: string; // searches name and email
-  archived?: "active" | "archived" | "all"; // default "active"
-  filters?: {
-    testNames?: string[];
-    states?: ("pending" | "in_progress" | "completed")[];
-    reviewStatusNames?: string[]; // use "None" for null statuses
-  };
-};
+type CandidateTestState = "pending" | "in_progress" | "completed";
 ```
 
-### `ListResponsesResult`
-Result from listing responses.
+### ListResponsesResult
 
 ```typescript
 type ListResponsesResult = {
   rows: CandidateResponse[];
-  total: number;
+  total: number;      // Total matching records
   hasNextPage: boolean;
 };
 ```
 
-### `ResponseUpdateFields`
-Fields that can be updated on a response.
+---
 
-```typescript
-type ResponseUpdateFields = {
-  reviewStatusId?: string | null;
-  archivedAt?: string | null;
-};
+## Error Handling
+
+All error responses follow this format:
+
+```json
+{
+  "error": "Error message describing what went wrong"
+}
 ```
 
-## Database Interface (`lib/db.ts`)
+| Status Code | Description |
+|-------------|-------------|
+| `200` | Success |
+| `400` | Bad request (invalid input, validation error) |
+| `404` | Resource not found |
 
-The `db` object provides a structured API for querying and mutating data. **Use this instead of directly manipulating data stores.**
-
-### `db.responses.list(params?: ListResponsesParams): Promise<ListResponsesResult>`
-Fetches paginated, filtered, and sorted candidate responses.
-
-**Example:**
-```typescript
-import { db } from "@/lib/db";
-
-const result = await db.responses.list({
-  page: 2,
-  pageSize: 20,
-  sort: "aiScore",
-  direction: "desc",
-  search: "john",
-  filters: {
-    testNames: ["Frontend Assessment"],
-    states: ["completed"],
-    reviewStatusNames: ["Phone Screen", "None"]
-  }
-});
-
-console.log(result.rows); // Array of 20 responses
-console.log(result.total); // Total matching responses
-console.log(result.hasNextPage); // true if more pages exist
-```
-
-### `db.responses.findById(id: string): Promise<CandidateResponse | null>`
-Finds a single response by ID.
-
-**Example:**
-```typescript
-const response = await db.responses.findById("response-123");
-```
-
-### `db.responses.update(id: string, updates: ResponseUpdateFields): Promise<number>`
-Updates a single response. Returns the number of rows updated (0 if not found, 1 if updated).
-
-**Example:**
-```typescript
-const count = await db.responses.update("response-123", {
-  reviewStatusId: "rs-2"
-});
-// count is 1 if updated, 0 if response not found
-
-// Archive a response
-await db.responses.update("response-123", {
-  archivedAt: new Date().toISOString()
-});
-
-// Clear review status
-await db.responses.update("response-123", {
-  reviewStatusId: null
-});
-```
-
-### `db.responses.updateMany(ids: string[], updates: ResponseUpdateFields): Promise<number>`
-Updates multiple responses. Returns the number of rows updated. **Must be wrapped in a transaction** for atomicity.
-
-**Example:**
-```typescript
-// BAD: No transaction - partial updates if error occurs
-const count = await db.responses.updateMany(["response-1", "response-2"], {
-  reviewStatusId: "rs-3"
-});
-
-// GOOD: Transaction ensures all-or-nothing
-let count = 0;
-await db.transaction(async () => {
-  count = await db.responses.updateMany(["response-1", "response-2"], {
-    reviewStatusId: "rs-3"
-  });
-});
-console.log(`Updated ${count} responses`);
-```
-
-### `db.reviewStatuses.list(): Promise<ReviewStatus[]>`
-Fetches all available review statuses.
-
-**Example:**
-```typescript
-const statuses = await db.reviewStatuses.list();
-// Returns: [{ id: "rs-1", name: "New", position: 1, type: "screening" }, ...]
-```
-
-### `db.reviewStatuses.findById(id: string): Promise<ReviewStatus | null>`
-Finds a single review status by ID.
-
-### `db.transaction<T>(fn: () => Promise<T>): Promise<T>`
-Wraps operations in a transaction. If any operation throws, all changes are rolled back.
-
-**Why Use Transactions:**
-- Ensures atomicity: all operations succeed or none do
-- Prevents partial updates when bulk operations fail mid-way
-- Critical for bulk status updates or bulk archive operations
-
-**Example:**
-```typescript
-await db.transaction(async () => {
-  // Update multiple responses
-  await db.responses.updateMany(selectedIds, {
-    reviewStatusId: "rs-5"
-  });
-
-  // Archive them all
-  await db.responses.updateMany(selectedIds, {
-    archivedAt: new Date().toISOString()
-  });
-});
-
-// If any operation fails, ALL changes are rolled back
-```
-
-## Implementing Mutations
-
-You'll need to implement mutations to handle:
-
-- Updating a single response's review status
-- Archiving a single response
-- Bulk archiving multiple responses
-- Bulk updating multiple responses' review status
-
-**Your decision**: Choose whether to use Server Actions, API Routes, or a combination. Consider how to handle errors, cache revalidation, and data consistency for bulk operations. Document your choice and reasoning in your README.
-
-## Data Fetching Options
-
-You have multiple ways to fetch data for your dashboard. Choose the patterns that best fit your architecture and justify your decisions.
-
-### Review Statuses
-
-**Available methods:**
-1. **Server-side (provided)**: Already fetched in `app/responses/page.tsx` and passed as a prop
-2. **Database method**: `db.reviewStatuses.list()` - can be called from server components or API routes
-3. **API route**: Create your own endpoint if you prefer client-side fetching
-
-### Test Names
-
-**Available methods:**
-1. **API route (provided)**: `/api/test-names` endpoint is available (requires `x-tenant: demo-employer` header)
-2. **Derive from responses**: Test names can be extracted from the responses data
-3. **Database method**: Call the database from server components
-
-### Your Decision
-
-Choose how you want to fetch each piece of data based on:
-- When the data is needed (initial load vs. dynamic)
-- How often it changes
-- Caching requirements
-- User experience considerations
-
-Document your data fetching strategy and reasoning in your README.
-
-## Notes
-- All data is stored in-memory for this assessment
-- The data layer includes 5000 mock responses generated on initialization
-- Pagination uses offset-based pagination for simplicity
-- Filters are applied in-memory after initial data fetch
-- Search is case-insensitive and matches partial strings
-- **Network delays are simulated** to demonstrate data fetching patterns:
-  - `listResponses()`: 1-2s delay
-  - `getReviewStatuses()`: 2-4s delay (cached)
-  - `getTestNames()`: 3-5s delay

@@ -1,18 +1,63 @@
-/**
- * TODO: Implement the responses page
- *
- * See docs/brief.md for requirements and docs/api-reference.md for available data fetching options.
- */
+import Link from "next/link";
+import { Nav } from "@/app/components/nav";
+import { CopyButton } from "@/components/copy-button";
+import { ResponsesDashboard } from "./responses-dashboard";
 
-export default async function ResponsesPage() {
+const API_URL = "https://mockapi.meritfirst.us";
+
+export default function ResponsesPage() {
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h1 className="text-2xl font-bold mb-4 text-gray-900">Candidate Responses</h1>
-          <p className="text-gray-600">Implement the dashboard here.</p>
+    <>
+      <Nav />
+      <div className="min-h-screen bg-background p-4 md:p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-2xl font-bold text-foreground">
+              Candidate Responses
+            </h1>
+            <div className="flex items-center gap-2">
+              <code className="text-xs bg-muted px-2 py-1 rounded text-muted-foreground">
+                {API_URL}
+              </code>
+              <CopyButton text={API_URL} />
+            </div>
+          </div>
+
+          {/* TODO: Remove this help section once you start building */}
+          <div className="bg-card rounded-lg shadow-sm p-6 border border-border mb-6">
+            <h2 className="font-semibold text-foreground mb-3">Getting Started</h2>
+            <div className="space-y-4 text-sm">
+              <div>
+                <p className="text-muted-foreground mb-2">
+                  <strong className="text-foreground">Task 1:</strong> General browsing — browse, search, filter, update statuses, archive/unarchive
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">
+                  <strong className="text-foreground">Task 2:</strong> Role-aware ranking — surface candidates relevant to the{" "}
+                  <Link href="/docs/brief" className="text-primary hover:underline">
+                    Senior Frontend Engineer role
+                  </Link>
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 pt-4 border-t border-border flex gap-4 text-sm">
+              <Link href="/docs/api" className="text-primary hover:underline">
+                API Reference
+              </Link>
+              <Link href="/docs/brief" className="text-primary hover:underline">
+                Product Brief
+              </Link>
+              <span className="text-muted-foreground">
+                Types: <code className="bg-muted px-1 rounded">lib/types.ts</code>
+              </span>
+            </div>
+          </div>
+
+          {/* Build your dashboard in responses-dashboard.tsx */}
+          <ResponsesDashboard />
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -1,127 +1,210 @@
 import Link from "next/link";
+import { Nav } from "@/app/components/nav";
+import { CopyButton } from "@/components/copy-button";
+
+const API_URL = "https://mockapi.meritfirst.us";
 
 export default function BriefPage() {
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow-sm p-8">
-          <Link
-            href="/"
-            className="text-blue-600 hover:text-blue-700 text-sm mb-4 inline-block"
-          >
-            ← Back to Home
-          </Link>
+    <>
+      <Nav />
+      <div className="min-h-screen bg-background p-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-card rounded-lg shadow-sm p-8 border border-border">
+            <h1 className="text-3xl font-bold text-foreground mb-6">
+              Product Brief
+            </h1>
 
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">
-            Response Review Dashboard - Product Brief
-          </h1>
-
-          <div className="prose prose-gray max-w-none">
-            <p className="text-lg text-gray-700 mb-6">
-              For detailed requirements, see <code>docs/brief.md</code> in the
-              project root. This page provides a quick overview.
-            </p>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                Goal
-              </h2>
-              <p className="text-gray-700">
-                Build a production-ready candidate response review dashboard that
-                allows employers to efficiently manage and evaluate test
-                submissions from candidates at scale.
+            <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 mb-6">
+              <p className="text-sm text-amber-700 dark:text-amber-400">
+                <strong>Note:</strong> This is a summary. See{" "}
+                <code className="bg-amber-500/20 px-1 rounded">docs/brief.md</code>{" "}
+                for the full requirements, job description, and data schema.
               </p>
-            </section>
+            </div>
 
-            <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                User Story
-              </h2>
-              <blockquote className="border-l-4 border-blue-500 pl-4 py-2 text-gray-700 italic">
-                As a hiring manager, I want to quickly filter and sort through
-                candidate test responses so I can identify top performers,
-                update review statuses, and manage my pipeline effectively.
-              </blockquote>
-            </section>
+            <div className="flex gap-2 mb-6">
+              <span className="text-xs font-medium px-2 py-1 rounded bg-muted text-muted-foreground">
+                Next.js 15
+              </span>
+              <span className="text-xs font-medium px-2 py-1 rounded bg-muted text-muted-foreground">
+                TypeScript
+              </span>
+              <span className="text-xs font-medium px-2 py-1 rounded bg-muted text-muted-foreground">
+                Tailwind CSS
+              </span>
+            </div>
 
-            <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                Key Features
-              </h2>
-              <ul className="space-y-2 text-gray-700">
-                <li>
-                  <strong>Server-side pagination:</strong> Handle 5000+ responses
-                  with performant server-side pagination
-                </li>
-                <li>
-                  <strong>Multi-column filtering:</strong> Filter by test name,
-                  review status, completion state
-                </li>
-                <li>
-                  <strong>Search:</strong> Find candidates by name or email with
-                  debounced input
-                </li>
-                <li>
-                  <strong>Sorting:</strong> Sort by candidate name, test name, AI
-                  score, or completion date
-                </li>
-                <li>
-                  <strong>Optimistic updates:</strong> Update review statuses with
-                  immediate UI feedback
-                </li>
-                <li>
-                  <strong>Bulk actions:</strong> Archive multiple responses at
-                  once
-                </li>
-                <li>
-                  <strong>Loading states:</strong> Skeleton loaders for smooth UX
-                </li>
-              </ul>
-            </section>
+            <div className="prose prose-neutral dark:prose-invert max-w-none">
+              <section className="mb-8">
+                <h2 className="text-2xl font-semibold text-foreground mb-4">
+                  Goal
+                </h2>
+                <p className="text-muted-foreground">
+                  Build a candidate review dashboard that helps hiring managers
+                  efficiently identify and manage top talent from ~50,000 test
+                  responses. You&apos;ll need to create both a general-purpose browsing
+                  experience and role-specific features that surface the best
+                  candidates for a Senior Frontend Engineer position.
+                </p>
+              </section>
 
-            <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                Technical Requirements
-              </h2>
-              <ul className="space-y-2 text-gray-700">
-                <li>Use Next.js 15 App Router with Server Components</li>
-                <li>Manage filter/sort state via URL search params</li>
-                <li>
-                  Use server actions for mutations with proper revalidation
-                </li>
-                <li>Implement responsive design (mobile + desktop)</li>
-                <li>Add proper TypeScript types throughout</li>
-                <li>Include loading and error states</li>
-                <li>Write tests for key functionality</li>
-              </ul>
-            </section>
+              <section className="mb-8">
+                <h2 className="text-2xl font-semibold text-foreground mb-4">
+                  The Two Tasks
+                </h2>
+                <p className="text-muted-foreground mb-4">
+                  Your dashboard needs to accomplish two distinct things:
+                </p>
 
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mt-8">
-              <h3 className="font-semibold text-gray-900 mb-2">
-                Next Steps
-              </h3>
-              <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
-                <li>
-                  Review acceptance criteria above for implementation requirements
-                </li>
-                <li>
-                  Study <code>docs/api-reference.md</code> for the database API
-                </li>
-                <li>
-                  Start building in{" "}
-                  <code>app/responses/responses-dashboard.tsx</code>
-                </li>
-                <li>
-                  Implement server actions in <code>app/responses/actions.ts</code>
-                </li>
-                <li>
-                  Run <code>pnpm test</code> to verify your implementation
-                </li>
-              </ol>
+                <div className="space-y-4">
+                  <div className="bg-muted/50 rounded-lg p-5 border border-border">
+                    <div className="flex gap-3">
+                      <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary text-primary-foreground text-sm font-semibold flex items-center justify-center">1</span>
+                      <div>
+                        <h3 className="font-semibold text-foreground mb-1">General Response Browsing</h3>
+                        <p className="text-muted-foreground text-sm mb-3">
+                          A baseline dashboard for browsing all candidate responses.
+                        </p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                          <li>View and navigate through all responses</li>
+                          <li>Search and filter capabilities</li>
+                          <li>Update review statuses</li>
+                          <li>Archive/unarchive (single and bulk)</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-muted/50 rounded-lg p-5 border border-border">
+                    <div className="flex gap-3">
+                      <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary text-primary-foreground text-sm font-semibold flex items-center justify-center">2</span>
+                      <div>
+                        <h3 className="font-semibold text-foreground mb-1">Role-Aware Candidate Ranking</h3>
+                        <p className="text-muted-foreground text-sm mb-3">
+                          When a role context is selected, surface candidates most relevant to that position.
+                        </p>
+                        <p className="text-sm text-muted-foreground italic">
+                          How you implement this is up to you. Think about what signals in the data
+                          indicate a good fit for the role described below.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section className="mb-8">
+                <h2 className="text-2xl font-semibold text-foreground mb-4">
+                  The Role
+                </h2>
+                <div className="bg-muted rounded-lg p-6">
+                  <h3 className="font-semibold text-foreground mb-2">
+                    Senior Frontend Engineer - Meridian Financial
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    Series B fintech startup looking for a Senior Frontend
+                    Engineer to build consumer-facing financial products.
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Your dashboard should help identify candidates who would be a
+                    good fit for this role. See <code>docs/brief.md</code> for the
+                    full job description.
+                  </p>
+                </div>
+              </section>
+
+              <section className="mb-8">
+                <h2 className="text-2xl font-semibold text-foreground mb-4">
+                  API
+                </h2>
+                <div className="p-4 bg-muted rounded-lg mb-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm text-foreground">
+                      <span className="font-medium">Base URL:</span>{" "}
+                      <code className="bg-background px-2 py-0.5 rounded text-foreground">
+                        {API_URL}
+                      </code>
+                    </p>
+                    <CopyButton text={API_URL} />
+                  </div>
+                </div>
+                <p className="text-muted-foreground">
+                  See the{" "}
+                  <Link href="/docs/api" className="text-primary hover:underline">
+                    API Reference
+                  </Link>{" "}
+                  for endpoints and examples.
+                </p>
+              </section>
+
+              <section className="mb-8">
+                <h2 className="text-2xl font-semibold text-foreground mb-4">
+                  Evaluation
+                </h2>
+                <ul className="space-y-2 text-muted-foreground">
+                  <li>
+                    <strong className="text-foreground">Product Thinking:</strong> Does the dashboard
+                    actually help find good candidates?
+                  </li>
+                  <li>
+                    <strong className="text-foreground">Technical Quality:</strong> Clean, well-typed,
+                    well-architected code
+                  </li>
+                  <li>
+                    <strong className="text-foreground">Performance:</strong> Fast initial load,
+                    responsive interactions, efficient data fetching
+                  </li>
+                  <li>
+                    <strong className="text-foreground">Polish:</strong> Loading states, responsive
+                    design, attention to detail
+                  </li>
+                  <li>
+                    <strong className="text-foreground">Creativity:</strong> Interesting features beyond
+                    the basics
+                  </li>
+                </ul>
+              </section>
+
+              <section className="mb-8">
+                <h2 className="text-2xl font-semibold text-foreground mb-4">
+                  Where to Build
+                </h2>
+                <p className="text-muted-foreground mb-3">
+                  Your implementation goes in:
+                </p>
+                <code className="block bg-muted px-4 py-3 rounded text-sm text-foreground">
+                  app/responses/
+                </code>
+                <p className="text-sm text-muted-foreground mt-3">
+                  Types are available in <code>lib/types.ts</code>. Create additional files as needed.
+                </p>
+              </section>
+
+              <div className="bg-muted rounded-lg p-6 mt-8">
+                <h3 className="font-semibold text-foreground mb-2">Next Steps</h3>
+                <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
+                  <li>
+                    Read the full brief at <code>docs/brief.md</code>
+                  </li>
+                  <li>
+                    Review the{" "}
+                    <Link href="/docs/api" className="text-primary hover:underline">
+                      API Reference
+                    </Link>
+                  </li>
+                  <li>
+                    Build your{" "}
+                    <Link href="/responses" className="text-primary hover:underline">
+                      dashboard
+                    </Link>
+                  </li>
+                </ol>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
