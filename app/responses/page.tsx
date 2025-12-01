@@ -6,7 +6,6 @@
  * - Server components, client components, server actions are all fair game.
  * - The code below is just a starting point. Feel free to delete it and start from scratch.
  *
- *
  */
 
 import Link from "next/link";
